@@ -52,30 +52,15 @@
 }
 
 @utility avatar-gradient {
-  background: radial-gradient(
-    circle at 30% 25%,
-    hsl(calc(var(--hue) + 40) 85% 70%),
-    hsl(var(--hue) 70% 45%) 55%,
-    hsl(calc(var(--hue) - 30) 60% 28%)
-  );
+  background: radial-gradient(circle at 30% 25%, hsl(calc(var(--hue) + 40) 85% 70%), hsl(var(--hue) 70% 45%) 55%, hsl(calc(var(--hue) - 30) 60% 28%));
 }
 
 @utility hue-gradient {
-  background: linear-gradient(
-    135deg,
-    hsl(var(--hue) 70% 22%),
-    hsl(calc(var(--hue) + 60) 70% 40%) 60%,
-    hsl(calc(var(--hue) + 120) 80% 60%)
-  );
+  background: linear-gradient(135deg, hsl(var(--hue) 70% 22%), hsl(calc(var(--hue) + 60) 70% 40%) 60%, hsl(calc(var(--hue) + 120) 80% 60%));
 }
 
 @utility skeleton {
-  background: linear-gradient(
-    90deg,
-    var(--color-skeleton) 0%,
-    var(--color-skeleton-shine) 40%,
-    var(--color-skeleton) 80%
-  );
+  background: linear-gradient(90deg, var(--color-skeleton) 0%, var(--color-skeleton-shine) 40%, var(--color-skeleton) 80%);
   background-size: 300% 100%;
   animation: var(--animate-shimmer);
 }

@@ -3,15 +3,15 @@ import { cx } from './cx'
 import { Card, rowClass } from './sidebar'
 
 function Line({ width, height = 12 }: { width: string; height?: number }) {
-  return <span class="skeleton block rounded-md" style={{ width, height: `${height}px` }} />
+  return <span class="block skeleton rounded-md" style={{ width, height: `${height}px` }} />
 }
 
 function Circle() {
-  return <span class="skeleton block size-10 shrink-0 rounded-full" />
+  return <span class="block size-10 shrink-0 skeleton rounded-full" />
 }
 
 function Pill() {
-  return <span class="skeleton block h-8 w-[76px] shrink-0 rounded-full" />
+  return <span class="block h-8 w-[76px] shrink-0 skeleton rounded-full" />
 }
 
 function PostSkeleton({ withMedia, short }: { withMedia: boolean; short: boolean }) {
@@ -22,7 +22,7 @@ function PostSkeleton({ withMedia, short }: { withMedia: boolean; short: boolean
         <Line width="38%" height={14} />
         <Line width="92%" />
         <Line width={short ? '64%' : '80%'} />
-        {withMedia && <span class="skeleton mt-1 block h-[220px] w-full rounded-2xl" />}
+        {withMedia && <span class="mt-1 block h-[220px] w-full skeleton rounded-2xl" />}
         <div class="mt-2 flex justify-between pr-[20%]">
           {[0, 1, 2, 3].map(() => (
             <Line width="10%" height={10} />

@@ -1,13 +1,6 @@
 import { cx } from './components/cx'
 import { Icon, Logo, type IconName } from './components/icons'
-import {
-  AccountSkeleton,
-  ComposerAvatarSkeleton,
-  NewsSkeleton,
-  TimelineSkeleton,
-  TrendsSkeleton,
-  WhoToFollowSkeleton,
-} from './components/skeletons'
+import { AccountSkeleton, ComposerAvatarSkeleton, NewsSkeleton, TimelineSkeleton, TrendsSkeleton, WhoToFollowSkeleton } from './components/skeletons'
 
 const navigation: { label: string; icon: IconName; badge?: string; active?: boolean }[] = [
   { label: 'Home', icon: 'home', badge: 'badge-home', active: true },
@@ -160,10 +153,7 @@ function FloatingButton({ icon, label }: { icon: IconName; label: string }) {
 
 export function HomePage() {
   return (
-    <div
-      data-signals="{tab: `for-you`, newsDismissed: false}"
-      data-init="@get(`/home/stream`)"
-    >
+    <div data-signals="{tab: `for-you`, newsDismissed: false}" data-init="@get(`/home/stream`)">
       <div class="flex min-h-screen justify-center">
         <Sidebar />
         <main class="flex flex-auto">

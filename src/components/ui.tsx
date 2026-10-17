@@ -51,7 +51,7 @@ export function Avatar({ person, size = 40, showInitials = true, class: classNam
   return (
     <span
       class={cx(
-        'avatar-gradient inline-flex shrink-0 items-center justify-center font-bold tracking-tight text-white text-shadow-xs',
+        'inline-flex shrink-0 items-center justify-center font-bold tracking-tight text-white avatar-gradient text-shadow-xs',
         person.org ? 'rounded-[22%]' : 'rounded-full',
         className,
       )}

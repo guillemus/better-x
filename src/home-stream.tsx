@@ -8,7 +8,10 @@ import { renderToString } from './render'
 
 export function streamHome() {
   return ServerSentEventGenerator.stream(async (stream) => {
-    const send = async (element: JSX.Element) => stream.patchElements(await renderToString(element))
+    async function send(element: JSX.Element) {
+      let html = await renderToString(element)
+      return stream.patchElements(html)
+    }
 
     await Promise.all([
       queries.getViewer().then((viewer) => send(<Account viewer={viewer} />)),

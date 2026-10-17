@@ -2,7 +2,8 @@ import type { BadgeCounts, Person } from '../types'
 import { Icon } from './icons'
 import { Avatar, Identity } from './ui'
 
-export const accountClass = 'mt-auto mb-3 flex animate-fade-in cursor-pointer items-center gap-3 rounded-full p-2 transition-colors hover:bg-ink/10 xl:p-3'
+export const accountClass =
+  'mt-auto mb-3 flex animate-fade-in cursor-pointer items-center gap-3 rounded-full p-2 transition-colors hover:bg-ink/10 xl:p-3'
 
 export function Account({ viewer }: { viewer: Person }) {
   return (

@@ -2,7 +2,9 @@ import { cx } from './cx'
 import type { Verified as VerifiedKind } from '../types'
 
 const glyphs = {
-  home: <path fill="currentColor" stroke="none" d="M12 1.7 1.6 9.6l1.2 1.6L4 10.3V21a1 1 0 0 0 1 1h5v-6.5h4V22h5a1 1 0 0 0 1-1V10.3l1.2.9 1.2-1.6z" />,
+  home: (
+    <path fill="currentColor" stroke="none" d="M12 1.7 1.6 9.6l1.2 1.6L4 10.3V21a1 1 0 0 0 1 1h5v-6.5h4V22h5a1 1 0 0 0 1-1V10.3l1.2.9 1.2-1.6z" />
+  ),
   search: (
     <>
       <circle cx="11" cy="11" r="7.5" />
@@ -94,7 +96,9 @@ const glyphs = {
       <path d="M21 13v1a4 4 0 0 1-4 4H3" />
     </>
   ),
-  like: <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />,
+  like: (
+    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+  ),
   views: <path d="M4 21v-7M9.33 21V9M14.67 21V3M20 21v-10" />,
   share: (
     <>

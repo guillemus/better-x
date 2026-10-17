@@ -84,7 +84,7 @@ function LinkCard({ domain, title }: { domain: string; title: string }) {
   return (
     <>
       <Frame>
-        <div class="hue-gradient aspect-[1.91]" style={{ '--hue': String((domain.length * 37) % 360) }}>
+        <div class="aspect-[1.91] hue-gradient" style={{ '--hue': String((domain.length * 37) % 360) }}>
           <span class={overlayLabel}>{title}</span>
         </div>
       </Frame>

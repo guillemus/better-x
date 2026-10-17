@@ -25,7 +25,7 @@ function Action({ icon, tone, count, toggles }: ActionProps) {
       aria-pressed={toggles ? 'false' : undefined}
       data-on:click={toggles ? togglePressed : undefined}
     >
-      <Icon name={icon} class="-my-2 -mr-0.5 -ml-2 size-[34px] rounded-full p-2 stroke-[1.6] transition-colors" />
+      <Icon name={icon} class="-my-2 -mr-0.5 -ml-2 size-[34px] rounded-full stroke-[1.6] p-2 transition-colors" />
       {count !== undefined && <span class="px-1">{compact(count)}</span>}
     </button>
   )
@@ -93,9 +93,7 @@ export function Post({ post }: { post: PostData }) {
 export function Timeline({ id, timeline }: { id: string; timeline: TimelineData }) {
   return (
     <div id={id} class="animate-fade-in" aria-live="polite">
-      <button class="block h-[49px] w-full border-b border-line text-brand transition-colors hover:bg-ink/3">
-        Show {timeline.newPosts} posts
-      </button>
+      <button class="block h-[49px] w-full border-b border-line text-brand transition-colors hover:bg-ink/3">Show {timeline.newPosts} posts</button>
       {timeline.posts.map((post) => (
         <Post post={post} />
       ))}

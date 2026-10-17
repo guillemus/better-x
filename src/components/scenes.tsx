@@ -16,7 +16,14 @@ function Gradient({ id, stops, horizontal }: { id: string; stops: [number, strin
 function Mountains() {
   return (
     <>
-      <Gradient id="mountains-sky" stops={[[0, '#5b8def'], [0.6, '#f6c59c'], [1, '#f7e3c8']]} />
+      <Gradient
+        id="mountains-sky"
+        stops={[
+          [0, '#5b8def'],
+          [0.6, '#f6c59c'],
+          [1, '#f7e3c8'],
+        ]}
+      />
       <rect width="600" height="340" fill="url(#mountains-sky)" />
       <circle cx="430" cy="150" r="38" fill="#fff4d6" />
       <path d="M0 250 120 120 210 210 300 90 420 230 510 140 600 220V340H0z" fill="#5a6b91" />
@@ -31,7 +38,14 @@ function Mountains() {
 function Sunset() {
   return (
     <>
-      <Gradient id="sunset-sky" stops={[[0, '#2b1055'], [0.45, '#d53369'], [0.7, '#ff9a44']]} />
+      <Gradient
+        id="sunset-sky"
+        stops={[
+          [0, '#2b1055'],
+          [0.45, '#d53369'],
+          [0.7, '#ff9a44'],
+        ]}
+      />
       <rect width="600" height="340" fill="url(#sunset-sky)" />
       <circle cx="300" cy="230" r="70" fill="#ffd56b" />
       <rect y="228" width="600" height="112" fill="#1b1a3a" />
@@ -49,7 +63,13 @@ function Sunset() {
 function Aurora() {
   return (
     <>
-      <Gradient id="aurora-sky" stops={[[0, '#050816'], [1, '#0d1b3d']]} />
+      <Gradient
+        id="aurora-sky"
+        stops={[
+          [0, '#050816'],
+          [1, '#0d1b3d'],
+        ]}
+      />
       <filter id="aurora-blur">
         <feGaussianBlur stdDeviation="18" />
       </filter>
@@ -71,7 +91,15 @@ function Datacenter() {
   }
   return (
     <>
-      <Gradient id="datacenter-glow" horizontal stops={[[0, 'rgba(29,155,240,0.25)'], [0.5, 'rgba(0,0,0,0)'], [1, 'rgba(138,92,255,0.25)']]} />
+      <Gradient
+        id="datacenter-glow"
+        horizontal
+        stops={[
+          [0, 'rgba(29,155,240,0.25)'],
+          [0.5, 'rgba(0,0,0,0)'],
+          [1, 'rgba(138,92,255,0.25)'],
+        ]}
+      />
       <rect width="600" height="340" fill="#060b18" />
       {range(7).map((rack) => (
         <g>
@@ -92,7 +120,13 @@ function Datacenter() {
 function Storm() {
   return (
     <>
-      <Gradient id="storm-sky" stops={[[0, '#1c1f26'], [1, '#3c4250']]} />
+      <Gradient
+        id="storm-sky"
+        stops={[
+          [0, '#1c1f26'],
+          [1, '#3c4250'],
+        ]}
+      />
       <rect width="600" height="340" fill="url(#storm-sky)" />
       <ellipse cx="150" cy="70" rx="160" ry="50" fill="#555c6b" />
       <ellipse cx="400" cy="60" rx="200" ry="55" fill="#555c6b" />
@@ -121,7 +155,13 @@ function City() {
   ]
   return (
     <>
-      <Gradient id="city-sky" stops={[[0, '#1a1340'], [1, '#f06b5b']]} />
+      <Gradient
+        id="city-sky"
+        stops={[
+          [0, '#1a1340'],
+          [1, '#f06b5b'],
+        ]}
+      />
       <rect width="600" height="340" fill="url(#city-sky)" />
       <g fill="#0d0a1f">
         {towers.map(([x, y, width]) => (

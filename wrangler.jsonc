@@ -2,5 +2,5 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "better-x",
   "main": "./src/index.tsx",
-  "compatibility_date": "2025-10-01"
+  "compatibility_date": "2025-10-01",
 }
