@@ -1,3 +1,4 @@
+import { ServerSentEventGenerator } from '@starfederation/datastar-sdk/web'
 import type { JSX } from 'hono/jsx/jsx-runtime'
 import { Account, NavBadges } from './components/account'
 import { Timeline } from './components/post'
@@ -6,7 +7,6 @@ import { TraceProgress, TraceRow, TraceTotal } from './components/stream-log'
 import * as queries from './queries'
 import { run, type Query } from './queries'
 import { renderToString } from './render'
-import { DatastarStream } from './sse'
 
 type Fragment = {
   name: string
@@ -28,36 +28,33 @@ export const fragments: Fragment[] = [
   fragment(queries.HomeLatestTimeline, '#following', (timeline) => <Timeline id="following" timeline={timeline} />),
 ]
 
-function streamHome(ctx: ExecutionContext) {
-  const stream = new DatastarStream()
-  const started = Date.now()
-  let done = 0
+function streamHome() {
+  return ServerSentEventGenerator.stream(async (stream) => {
+    const started = Date.now()
+    let done = 0
 
-  const jobs = fragments.map(async ({ name, target, render }) => {
-    const html = await render()
-    const ms = Date.now() - started
-    done += 1
-    await stream.patchElements(html)
-    await stream.patchElements(<TraceRow name={name} target={target} ms={ms} bytes={html.length} />, {
-      selector: '#trace',
-      mode: 'append',
-    })
-    await stream.patchElements(<TraceProgress done={done} total={fragments.length} ms={ms} />)
+    await Promise.all(
+      fragments.map(async ({ name, target, render }) => {
+        const html = await render()
+        const ms = Date.now() - started
+        const count = ++done
+        stream.patchElements(html)
+        stream.patchElements(await renderToString(<TraceRow name={name} target={target} ms={ms} bytes={html.length} />), {
+          selector: '#trace',
+          mode: 'append',
+        })
+        stream.patchElements(await renderToString(<TraceProgress done={count} total={fragments.length} ms={ms} />))
+      }),
+    )
+
+    stream.patchElements(await renderToString(<TraceTotal ms={Date.now() - started} />))
   })
-
-  ctx.waitUntil(
-    Promise.all(jobs)
-      .then(() => stream.patchElements(<TraceTotal ms={Date.now() - started} />))
-      .finally(() => stream.close()),
-  )
-
-  return stream.response
 }
 
 export default {
-  async fetch(request, env, ctx) {
+  async fetch(request, env) {
     const { pathname } = new URL(request.url)
-    if (pathname === '/home/stream') return streamHome(ctx)
+    if (pathname === '/home/stream') return streamHome()
     return env.ASSETS.fetch(request)
   },
 } satisfies ExportedHandler<{ ASSETS: Fetcher }>

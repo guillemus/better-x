@@ -18,6 +18,7 @@
     "wrangler": "^4.151.1"
   },
   "dependencies": {
+    "@starfederation/datastar-sdk": "^1.0.0",
     "hono": "^4.13.13"
   }
 }
