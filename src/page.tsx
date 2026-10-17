@@ -1,4 +1,3 @@
-import { raw } from 'hono/html'
 import { cx } from './components/cx'
 import { Icon, Logo, type IconName } from './components/icons'
 import {
@@ -28,9 +27,6 @@ const navigation: { label: string; icon: IconName; badge?: string; active?: bool
 const composerTools: IconName[] = ['image', 'gif', 'spark', 'list', 'emoji', 'schedule', 'location', 'flag']
 
 const footerLinks = ['Terms of Service', 'Privacy Policy', 'Cookie Policy', 'Accessibility', 'Ads info', 'More ···']
-
-const favicon =
-  "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><rect width='40' height='40' rx='11'/><path d='M12 12 28 28M28 12 12 28' stroke='white' stroke-width='3.6' stroke-linecap='round'/></svg>"
 
 const paperButton = 'rounded-full bg-paper font-bold text-paper-ink transition-colors hover:bg-paper-hover disabled:opacity-50'
 
@@ -163,39 +159,24 @@ function FloatingButton({ icon, label }: { icon: IconName; label: string }) {
   )
 }
 
-export function Page({ css, queryCount }: { css: string; queryCount: number }) {
+export function HomePage({ queryCount }: { queryCount: number }) {
   return (
-    <>
-      {raw('<!doctype html>')}
-      <html lang="en">
-        <head>
-          <meta charset="utf-8" />
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <title>Home / Better X</title>
-          <meta name="description" content="A cached HTML shell plus one Datastar SSE stream. Every panel streams in as its query resolves." />
-          <link rel="icon" href={favicon} />
-          <style>{raw(css)}</style>
-          <script type="module" src="/datastar.js" />
-        </head>
-        <body
-          class="bg-black font-sans text-[15px]/5 text-ink antialiased"
-          data-signals="{tab: 'for-you', newsDismissed: false, streamLogOpen: false}"
-          data-init="@get('/home/stream', {openWhenHidden: true})"
-        >
-          <div class="flex min-h-screen justify-center">
-            <Sidebar />
-            <main class="flex flex-auto">
-              <Home />
-              <Aside />
-            </main>
-          </div>
-          <div class="fixed right-7 bottom-5 z-10 hidden flex-col gap-3.5 md:flex">
-            <FloatingButton icon="spark" label="Spark" />
-            <FloatingButton icon="chat" label="Chat" />
-          </div>
-          <StreamLog queryCount={queryCount} />
-        </body>
-      </html>
-    </>
+    <div
+      data-signals="{tab: 'for-you', newsDismissed: false, streamLogOpen: false}"
+      data-init="@get('/home/stream', {openWhenHidden: true})"
+    >
+      <div class="flex min-h-screen justify-center">
+        <Sidebar />
+        <main class="flex flex-auto">
+          <Home />
+          <Aside />
+        </main>
+      </div>
+      <div class="fixed right-7 bottom-5 z-10 hidden flex-col gap-3.5 md:flex">
+        <FloatingButton icon="spark" label="Spark" />
+        <FloatingButton icon="chat" label="Chat" />
+      </div>
+      <StreamLog queryCount={queryCount} />
+    </div>
   )
 }

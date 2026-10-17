@@ -1,13 +1,6 @@
 {
+  "$schema": "node_modules/wrangler/config-schema.json",
   "name": "better-x",
-  "main": "src/worker.tsx",
-  "compatibility_date": "2025-10-01",
-  "build": {
-    "command": "npm run build",
-    "watch_dir": ["src", "scripts"]
-  },
-  "assets": {
-    "directory": "./public",
-    "binding": "ASSETS"
-  }
+  "main": "./src/index.tsx",
+  "compatibility_date": "2025-10-01"
 }

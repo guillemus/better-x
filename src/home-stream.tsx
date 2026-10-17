@@ -28,7 +28,7 @@ export const fragments: Fragment[] = [
   fragment(queries.HomeLatestTimeline, '#following', (timeline) => <Timeline id="following" timeline={timeline} />),
 ]
 
-function streamHome() {
+export function streamHome() {
   return ServerSentEventGenerator.stream(async (stream) => {
     const started = Date.now()
     let done = 0
@@ -50,11 +50,3 @@ function streamHome() {
     stream.patchElements(await renderToString(<TraceTotal ms={Date.now() - started} />))
   })
 }
-
-export default {
-  async fetch(request, env) {
-    const { pathname } = new URL(request.url)
-    if (pathname === '/home/stream') return streamHome()
-    return env.ASSETS.fetch(request)
-  },
-} satisfies ExportedHandler<{ ASSETS: Fetcher }>
