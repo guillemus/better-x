@@ -8,7 +8,6 @@ import {
   TrendsSkeleton,
   WhoToFollowSkeleton,
 } from './components/skeletons'
-import { StreamLog } from './components/stream-log'
 
 const navigation: { label: string; icon: IconName; badge?: string; active?: boolean }[] = [
   { label: 'Home', icon: 'home', badge: 'badge-home', active: true },
@@ -68,8 +67,8 @@ function Tab({ id, label, chevron }: { id: string; label: string; chevron?: bool
       class="group flex flex-1 justify-center text-muted transition-colors hover:bg-ink/10 aria-selected:font-bold aria-selected:text-ink"
       role="tab"
       aria-selected={id === 'for-you' ? 'true' : 'false'}
-      data-attr:aria-selected={`$tab == '${id}' ? 'true' : 'false'`}
-      data-on:click={`$tab = '${id}'; window.scrollTo(0, 0)`}
+      data-attr:aria-selected={`$tab == \`${id}\` ? \`true\` : \`false\``}
+      data-on:click={`$tab = \`${id}\`; window.scrollTo(0, 0)`}
     >
       <span class="relative flex h-full items-center gap-1">
         {label}
@@ -114,10 +113,10 @@ function Home() {
         </button>
       </div>
       <Composer />
-      <div data-show="$tab == 'for-you'">
+      <div data-show="$tab == `for-you`">
         <TimelineSkeleton id="for-you" />
       </div>
-      <div data-show="$tab == 'following'" style="display: none">
+      <div data-show="$tab == `following`" style="display: none">
         <TimelineSkeleton id="following" />
       </div>
     </div>
@@ -159,11 +158,11 @@ function FloatingButton({ icon, label }: { icon: IconName; label: string }) {
   )
 }
 
-export function HomePage({ queryCount }: { queryCount: number }) {
+export function HomePage() {
   return (
     <div
-      data-signals="{tab: 'for-you', newsDismissed: false, streamLogOpen: false}"
-      data-init="@get('/home/stream')"
+      data-signals="{tab: `for-you`, newsDismissed: false}"
+      data-init="@get(`/home/stream`)"
     >
       <div class="flex min-h-screen justify-center">
         <Sidebar />
@@ -176,7 +175,6 @@ export function HomePage({ queryCount }: { queryCount: number }) {
         <FloatingButton icon="spark" label="Spark" />
         <FloatingButton icon="chat" label="Chat" />
       </div>
-      <StreamLog queryCount={queryCount} />
     </div>
   )
 }

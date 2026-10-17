@@ -1,5 +1,5 @@
 import { Hono } from 'hono'
-import { fragments, streamHome } from './home-stream'
+import { streamHome } from './home-stream'
 import { HomePage } from './page'
 import { renderer } from './renderer'
 
@@ -9,7 +9,7 @@ app.use(renderer)
 
 app.get('/', (c) => {
   c.header('Cache-Control', 'public, max-age=300, stale-while-revalidate=86400')
-  return c.render(<HomePage queryCount={fragments.length} />)
+  return c.render(<HomePage />)
 })
 
 app.get('/home/stream', () => streamHome())

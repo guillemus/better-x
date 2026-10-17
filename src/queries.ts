@@ -3,19 +3,13 @@ import { following, forYou, type PostSeed } from './data/posts'
 import { headlines, suggestions, trends } from './data/sidebar'
 import type { BadgeCounts, NewsStory, Person, Post, Timeline, Trend } from './types'
 
-export type Query<T> = {
-  name: string
-  latency: [min: number, max: number]
-  load: () => T
-}
-
 const random = (min: number, max: number) => Math.round(min + Math.random() * (max - min))
 
 const shuffle = <T>(items: T[]) => [...items].sort(() => Math.random() - 0.5)
 
 const sample = <T>(items: T[], count: number) => shuffle(items).slice(0, count)
 
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+const sleep = (min: number, max: number) => new Promise((resolve) => setTimeout(resolve, random(min, max)))
 
 function age(minutes: number) {
   if (minutes < 60) return `${minutes}m`
@@ -51,73 +45,55 @@ function toPost(seed: PostSeed, id: string): Post {
   }
 }
 
-export const Viewer: Query<Person> = {
-  name: 'Viewer',
-  latency: [50, 160],
-  load: () => viewer,
+export async function getViewer(): Promise<Person> {
+  await sleep(50, 160)
+  return viewer
 }
 
-export const ViewerBadgeCounts: Query<BadgeCounts> = {
-  name: 'ViewerBadgeCounts',
-  latency: [120, 260],
-  load: () => ({
+export async function getBadgeCounts(): Promise<BadgeCounts> {
+  await sleep(120, 260)
+  return {
     notifications: Math.random() < 0.7 ? random(1, 12) : 0,
     messages: random(0, 3),
-  }),
+  }
 }
 
-export const StoryTopic: Query<NewsStory[]> = {
-  name: 'useStoryTopicQuery',
-  latency: [140, 320],
-  load: () =>
-    sample(headlines, 3).map((headline) => ({
-      ...headline,
-      age: `${random(1, 23)} hours ago`,
-      posts: random(200, 15_000),
-      faces: sample(Object.values(people), 3),
-    })),
+export async function getNews(): Promise<NewsStory[]> {
+  await sleep(140, 320)
+  return sample(headlines, 3).map((headline) => ({
+    ...headline,
+    age: `${random(1, 23)} hours ago`,
+    posts: random(200, 15_000),
+    faces: sample(Object.values(people), 3),
+  }))
 }
 
-export const ExploreSidebar: Query<Trend[]> = {
-  name: 'ExploreSidebar',
-  latency: [280, 650],
-  load: () =>
-    sample(trends, 4).map((trend) => ({
-      ...trend,
-      posts: Math.random() < 0.5 ? random(1_200, 90_000) : undefined,
-    })),
+export async function getTrends(): Promise<Trend[]> {
+  await sleep(280, 650)
+  return sample(trends, 4).map((trend) => ({
+    ...trend,
+    posts: Math.random() < 0.5 ? random(1_200, 90_000) : undefined,
+  }))
 }
 
-export const SidebarUserRecommendations: Query<Person[]> = {
-  name: 'SidebarUserRecommendations',
-  latency: [350, 800],
-  load: () => sample(suggestions, 3).map((key) => people[key]),
+export async function getWhoToFollow(): Promise<Person[]> {
+  await sleep(350, 800)
+  return sample(suggestions, 3).map((key) => people[key])
 }
 
-export const HomeTimeline: Query<Timeline> = {
-  name: 'HomeTimeline',
-  latency: [420, 1100],
-  load: () => {
-    const [pinned, ad, ...rest] = forYou
-    return {
-      newPosts: random(12, 90),
-      posts: [pinned, ad, ...shuffle(rest)].map((seed, i) => toPost(seed, `for-you-${i}`)),
-    }
-  },
+export async function getForYou(): Promise<Timeline> {
+  await sleep(420, 1100)
+  const [pinned, ad, ...rest] = forYou
+  return {
+    newPosts: random(12, 90),
+    posts: [pinned, ad, ...shuffle(rest)].map((seed, i) => toPost(seed, `for-you-${i}`)),
+  }
 }
 
-export const HomeLatestTimeline: Query<Timeline> = {
-  name: 'HomeLatestTimeline',
-  latency: [600, 1500],
-  load: () => ({
+export async function getFollowing(): Promise<Timeline> {
+  await sleep(600, 1500)
+  return {
     newPosts: random(3, 30),
     posts: following.map((seed, i) => toPost(seed, `following-${i}`)),
-  }),
-}
-
-export async function run<T>(query: Query<T>) {
-  const [min, max] = query.latency
-  const tail = Math.random() < 0.12 ? 1.8 : 1
-  await sleep(random(min, max) * tail)
-  return query.load()
+  }
 }
