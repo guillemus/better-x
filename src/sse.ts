@@ -1,4 +1,5 @@
-import type { Html } from './jsx/jsx-runtime'
+import type { JSX } from 'hono/jsx/jsx-runtime'
+import { renderToString } from './render'
 
 type PatchOptions = {
   selector?: string
@@ -22,11 +23,12 @@ export class DatastarStream {
     })
   }
 
-  patchElements(elements: Html, { selector, mode }: PatchOptions = {}) {
+  async patchElements(elements: JSX.Element | string, { selector, mode }: PatchOptions = {}) {
+    const html = await renderToString(elements)
     const lines = ['event: datastar-patch-elements']
     if (selector) lines.push(`data: selector ${selector}`)
     if (mode) lines.push(`data: mode ${mode}`)
-    for (const line of elements.toString().split('\n')) lines.push(`data: elements ${line}`)
+    for (const line of html.split('\n')) lines.push(`data: elements ${line}`)
     return this.writer.write(encoder.encode(`${lines.join('\n')}\n\n`))
   }
 

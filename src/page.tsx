@@ -1,4 +1,4 @@
-import { raw } from './jsx/jsx-runtime'
+import { raw } from 'hono/html'
 import { cx } from './components/cx'
 import { Icon, Logo, type IconName } from './components/icons'
 import {

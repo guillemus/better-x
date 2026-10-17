@@ -2,3 +2,4 @@ node_modules
 .wrangler
 public/index.html
 .build
+*.har

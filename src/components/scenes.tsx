@@ -1,4 +1,4 @@
-import type { Html } from '../jsx/jsx-runtime'
+import type { JSX } from 'hono/jsx/jsx-runtime'
 import type { Scene } from '../types'
 
 const range = (n: number) => Array.from({ length: n }, (_, i) => i)
@@ -178,7 +178,7 @@ function Focaccia() {
   )
 }
 
-const scenes: Record<Scene, () => Html> = {
+const scenes: Record<Scene, () => JSX.Element> = {
   mountains: Mountains,
   sunset: Sunset,
   aurora: Aurora,

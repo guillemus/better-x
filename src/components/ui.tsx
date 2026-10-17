@@ -55,7 +55,7 @@ export function Avatar({ person, size = 40, showInitials = true, class: classNam
         person.org ? 'rounded-[22%]' : 'rounded-full',
         className,
       )}
-      style={{ '--hue': person.hue, width: `${size}px`, height: `${size}px`, 'font-size': `${size * 0.36}px` }}
+      style={{ '--hue': String(person.hue), width: size, height: size, fontSize: size * 0.36 }}
     >
       {showInitials && initials(person.name)}
     </span>

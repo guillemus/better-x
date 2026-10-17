@@ -1,4 +1,4 @@
-import type { Child } from '../jsx/jsx-runtime'
+import type { Child } from 'hono/jsx'
 import type { NewsStory, Person, Trend } from '../types'
 import { cx } from './cx'
 import { Avatar, compact, IconButton, Identity, togglePressed } from './ui'

@@ -1,20 +1,21 @@
-import type { Html } from './jsx/jsx-runtime'
+import type { JSX } from 'hono/jsx/jsx-runtime'
 import { Account, NavBadges } from './components/account'
 import { Timeline } from './components/post'
 import { TodaysNews, WhatsHappening, WhoToFollow } from './components/sidebar'
 import { TraceProgress, TraceRow, TraceTotal } from './components/stream-log'
 import * as queries from './queries'
 import { run, type Query } from './queries'
+import { renderToString } from './render'
 import { DatastarStream } from './sse'
 
 type Fragment = {
   name: string
   target: string
-  render: () => Promise<Html>
+  render: () => Promise<string>
 }
 
-function fragment<T>(query: Query<T>, target: string, view: (data: T) => Html): Fragment {
-  return { name: query.name, target, render: async () => view(await run(query)) }
+function fragment<T>(query: Query<T>, target: string, view: (data: T) => JSX.Element): Fragment {
+  return { name: query.name, target, render: async () => renderToString(view(await run(query))) }
 }
 
 export const fragments: Fragment[] = [
@@ -37,7 +38,7 @@ function streamHome(ctx: ExecutionContext) {
     const ms = Date.now() - started
     done += 1
     await stream.patchElements(html)
-    await stream.patchElements(<TraceRow name={name} target={target} ms={ms} bytes={html.value.length} />, {
+    await stream.patchElements(<TraceRow name={name} target={target} ms={ms} bytes={html.length} />, {
       selector: '#trace',
       mode: 'append',
     })
