@@ -35,15 +35,18 @@ export function streamHome() {
 
     await Promise.all(
       fragments.map(async ({ name, target, render }) => {
-        const html = await render()
+        let html = await render()
         const ms = Date.now() - started
         const count = ++done
         stream.patchElements(html)
-        stream.patchElements(await renderToString(<TraceRow name={name} target={target} ms={ms} bytes={html.length} />), {
+
+        html = await renderToString(<TraceRow name={name} target={target} ms={ms} bytes={html.length} />)
+        stream.patchElements(html, {
           selector: '#trace',
           mode: 'append',
         })
-        stream.patchElements(await renderToString(<TraceProgress done={count} total={fragments.length} ms={ms} />))
+        html = await renderToString(<TraceProgress done={count} total={fragments.length} ms={ms} />)
+        stream.patchElements(html)
       }),
     )
 

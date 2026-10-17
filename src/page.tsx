@@ -163,7 +163,7 @@ export function HomePage({ queryCount }: { queryCount: number }) {
   return (
     <div
       data-signals="{tab: 'for-you', newsDismissed: false, streamLogOpen: false}"
-      data-init="@get('/home/stream', {openWhenHidden: true})"
+      data-init="@get('/home/stream')"
     >
       <div class="flex min-h-screen justify-center">
         <Sidebar />
