@@ -3,4 +3,5 @@
   "name": "better-x",
   "main": "./src/index.tsx",
   "compatibility_date": "2025-10-01",
+  "placement": { "mode": "targeted", "region": "aws:us-east-1" },
 }

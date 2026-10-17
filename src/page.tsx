@@ -1,8 +1,30 @@
+import type { JSX } from 'hono/jsx/jsx-runtime'
+import { Suspense } from 'hono/jsx/streaming'
+import { AccountCard, ComposerAvatar, NavBadge, type BadgeId } from './components/account'
 import { cx } from './components/cx'
 import { Icon, Logo, type IconName } from './components/icons'
+import { Timeline } from './components/post'
+import { TodaysNews, WhatsHappening, WhoToFollow } from './components/sidebar'
 import { AccountSkeleton, ComposerAvatarSkeleton, NewsSkeleton, TimelineSkeleton, TrendsSkeleton, WhoToFollowSkeleton } from './components/skeletons'
+import type { HomeQueries } from './queries'
 
-const navigation: { label: string; icon: IconName; badge?: string; active?: boolean }[] = [
+type DeferredProps<T> = {
+  value?: Promise<T>
+  fallback: JSX.Element
+  render: (value: T) => JSX.Element
+}
+
+function Deferred<T>({ value, fallback, render }: DeferredProps<T>) {
+  if (!value) return fallback
+  const Resolved = async () => render(await value)
+  return (
+    <Suspense fallback={fallback}>
+      <Resolved />
+    </Suspense>
+  )
+}
+
+const navigation: { label: string; icon: IconName; badge?: BadgeId; active?: boolean }[] = [
   { label: 'Home', icon: 'home', badge: 'badge-home', active: true },
   { label: 'Explore', icon: 'search' },
   { label: 'Notifications', icon: 'bell', badge: 'badge-notifications' },
@@ -22,7 +44,7 @@ const footerLinks = ['Terms of Service', 'Privacy Policy', 'Cookie Policy', 'Acc
 
 const paperButton = 'rounded-full bg-paper font-bold text-paper-ink transition-colors hover:bg-paper-hover disabled:opacity-50'
 
-function Sidebar() {
+function Sidebar({ data }: { data?: HomeQueries }) {
   return (
     <header class="hidden flex-auto justify-end md:flex">
       <nav class="sticky top-0 flex h-screen w-[88px] flex-col items-center overflow-y-auto px-2 xl:w-[275px] xl:items-stretch">
@@ -39,7 +61,13 @@ function Sidebar() {
           >
             <span class="relative">
               <Icon name={item.icon} class={cx('size-[26px]', item.active && '[&_*]:stroke-[2.2]')} />
-              {item.badge && <span id={item.badge} />}
+              {item.badge && (
+                <Deferred
+                  value={data?.counts}
+                  fallback={<span id={item.badge} />}
+                  render={(counts) => <NavBadge id={item.badge!} counts={counts} />}
+                />
+              )}
             </span>
             <span class="hidden xl:inline">{item.label}</span>
           </a>
@@ -48,7 +76,7 @@ function Sidebar() {
           <span class="hidden xl:inline">Post</span>
           <Icon name="plus" class="size-6 xl:hidden" />
         </button>
-        <AccountSkeleton />
+        <Deferred value={data?.viewer} fallback={<AccountSkeleton />} render={(viewer) => <AccountCard viewer={viewer} />} />
       </nav>
     </header>
   )
@@ -72,10 +100,10 @@ function Tab({ id, label, chevron, onOpen = '' }: { id: string; label: string; c
   )
 }
 
-function Composer() {
+function Composer({ data }: { data?: HomeQueries }) {
   return (
     <div class="flex gap-3 border-b border-line px-4 pt-3 pb-2">
-      <ComposerAvatarSkeleton />
+      <Deferred value={data?.viewer} fallback={<ComposerAvatarSkeleton />} render={(viewer) => <ComposerAvatar viewer={viewer} />} />
       <div class="min-w-0 flex-1">
         <div class="py-2 text-xl/7 text-muted">What’s happening?</div>
         <div class="mt-2 flex items-center justify-between">
@@ -95,7 +123,7 @@ function Composer() {
   )
 }
 
-function Home() {
+function Home({ data }: { data?: HomeQueries }) {
   return (
     <div class="min-h-screen w-full border-line md:w-[600px] md:border-x">
       <div class="sticky top-0 z-10 flex h-[53px] border-b border-line bg-black/65 backdrop-blur-md" role="tablist">
@@ -113,9 +141,13 @@ function Home() {
           <Icon name="plus" class="size-5" />
         </button>
       </div>
-      <Composer />
-      <div data-show="$tab == `for-you`" data-init="@get(`/home/timeline/for-you`)">
-        <TimelineSkeleton id="for-you" />
+      <Composer data={data} />
+      <div data-show="$tab == `for-you`" data-init={data ? undefined : '@get(`/home/timeline/for-you`)'}>
+        <Deferred
+          value={data?.forYou}
+          fallback={<TimelineSkeleton id="for-you" />}
+          render={(timeline) => <Timeline id="for-you" timeline={timeline} />}
+        />
       </div>
       <div data-show="$tab == `following`" style="display: none">
         <TimelineSkeleton id="following" />
@@ -124,7 +156,7 @@ function Home() {
   )
 }
 
-function Aside() {
+function Aside({ data }: { data?: HomeQueries }) {
   return (
     <aside class="mr-2.5 ml-[30px] hidden w-[350px] shrink-0 pb-16 lg:block">
       <div class="sticky top-0 z-10 mb-1 bg-black py-1.5">
@@ -133,9 +165,9 @@ function Aside() {
           <input class="min-w-0 flex-1 bg-transparent text-[15px] text-ink outline-none placeholder:text-muted" placeholder="Search" />
         </label>
       </div>
-      <NewsSkeleton />
-      <TrendsSkeleton />
-      <WhoToFollowSkeleton />
+      <Deferred value={data?.news} fallback={<NewsSkeleton />} render={(stories) => <TodaysNews stories={stories} />} />
+      <Deferred value={data?.trends} fallback={<TrendsSkeleton />} render={(trends) => <WhatsHappening trends={trends} />} />
+      <Deferred value={data?.whoToFollow} fallback={<WhoToFollowSkeleton />} render={(people) => <WhoToFollow people={people} />} />
       <footer class="flex flex-wrap gap-x-3 gap-y-1 px-4 text-[13px] text-muted">
         {footerLinks.map((link) => (
           <a class="hover:underline" href="#">
@@ -159,16 +191,38 @@ function FloatingButton({ icon, label }: { icon: IconName; label: string }) {
   )
 }
 
-export function HomePage() {
+const versions = [
+  { href: '/', label: 'Shell + SSE' },
+  { href: '/streamed', label: 'Streamed HTML' },
+]
+
+function VersionSwitcher({ current }: { current: string }) {
   return (
-    <div data-signals="{tab: `for-you`, news_dismissed: false}" data-init="@get(`/home/stream`)">
+    <nav class="fixed bottom-5 left-5 z-20 flex gap-1 rounded-full border border-line bg-black/80 p-1 text-[13px] font-bold shadow-[0_0_15px_rgb(255_255_255/0.1)] backdrop-blur-md">
+      {versions.map((version) => (
+        <a
+          class="rounded-full px-3 py-1.5 text-muted transition-colors hover:text-ink aria-[current=page]:bg-paper aria-[current=page]:text-paper-ink"
+          href={version.href}
+          aria-current={version.href === current ? 'page' : undefined}
+        >
+          {version.label}
+        </a>
+      ))}
+    </nav>
+  )
+}
+
+export function HomePage({ data }: { data?: HomeQueries }) {
+  return (
+    <div data-signals="{tab: `for-you`, news_dismissed: false}" data-init={data ? undefined : '@get(`/home/stream`)'}>
       <div class="flex min-h-screen justify-center">
-        <Sidebar />
+        <Sidebar data={data} />
         <main class="flex flex-auto">
-          <Home />
-          <Aside />
+          <Home data={data} />
+          <Aside data={data} />
         </main>
       </div>
+      <VersionSwitcher current={data ? '/streamed' : '/'} />
       <div class="fixed right-7 bottom-5 z-10 hidden flex-col gap-3.5 md:flex">
         <FloatingButton icon="spark" label="Spark" />
         <FloatingButton icon="chat" label="Chat" />

@@ -1,7 +1,8 @@
+import type { Child } from 'hono/jsx'
 import { jsxRenderer } from 'hono/jsx-renderer'
 import { Link, ViteClient } from 'vite-ssr-components/hono'
 
-export const renderer = jsxRenderer(({ children }) => (
+const Document = ({ children }: { children?: Child }) => (
   <html lang="en">
     <head>
       <meta charset="utf-8" />
@@ -11,8 +12,12 @@ export const renderer = jsxRenderer(({ children }) => (
       <link rel="icon" href="/favicon.svg" />
       <ViteClient />
       <Link href="/src/style.css" rel="stylesheet" />
-      <script type="module" src="/datastar.js" />
+      <script type="module" async src="/datastar.js" />
     </head>
     <body class="bg-black font-sans text-[15px]/5 text-ink antialiased">{children}</body>
   </html>
-))
+)
+
+export const renderer = jsxRenderer(Document)
+
+export const streamingRenderer = jsxRenderer(Document, { stream: true })

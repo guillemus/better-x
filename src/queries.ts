@@ -92,3 +92,16 @@ export async function getFollowing(): Promise<Timeline> {
     posts: following.map((seed, i) => toPost(seed, i, `following-${i}`)),
   }
 }
+
+export function startHomeQueries() {
+  return {
+    viewer: getViewer(),
+    counts: getBadgeCounts(),
+    news: getNews(),
+    trends: getTrends(),
+    whoToFollow: getWhoToFollow(),
+    forYou: getForYou(),
+  }
+}
+
+export type HomeQueries = ReturnType<typeof startHomeQueries>
