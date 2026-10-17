@@ -54,14 +54,14 @@ function Sidebar() {
   )
 }
 
-function Tab({ id, label, chevron }: { id: string; label: string; chevron?: boolean }) {
+function Tab({ id, label, chevron, onOpen = '' }: { id: string; label: string; chevron?: boolean; onOpen?: string }) {
   return (
     <button
       class="group flex flex-1 justify-center text-muted transition-colors hover:bg-ink/10 aria-selected:font-bold aria-selected:text-ink"
       role="tab"
       aria-selected={id === 'for-you' ? 'true' : 'false'}
       data-attr:aria-selected={`$tab == \`${id}\` ? \`true\` : \`false\``}
-      data-on:click={`$tab = \`${id}\`; window.scrollTo(0, 0)`}
+      data-on:click={`$tab = \`${id}\`; window.scrollTo(0, 0); ${onOpen}`}
     >
       <span class="relative flex h-full items-center gap-1">
         {label}
@@ -100,13 +100,21 @@ function Home() {
     <div class="min-h-screen w-full border-line md:w-[600px] md:border-x">
       <div class="sticky top-0 z-10 flex h-[53px] border-b border-line bg-black/65 backdrop-blur-md" role="tablist">
         <Tab id="for-you" label="For you" chevron />
-        <Tab id="following" label="Following" />
+        <Tab
+          id="following"
+          label="Following"
+          onOpen={`
+            if (!$followingRequested) {
+              $followingRequested = true;
+              @get('/home/timeline/following')
+            }`}
+        />
         <button class="flex w-[53px] items-center justify-center transition-colors hover:bg-ink/10" aria-label="Add timeline">
           <Icon name="plus" class="size-5" />
         </button>
       </div>
       <Composer />
-      <div data-show="$tab == `for-you`">
+      <div data-show="$tab == `for-you`" data-init="@get(`/home/timeline/for-you`)">
         <TimelineSkeleton id="for-you" />
       </div>
       <div data-show="$tab == `following`" style="display: none">

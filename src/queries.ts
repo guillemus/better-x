@@ -5,10 +5,6 @@ import type { BadgeCounts, NewsStory, Person, Post, Timeline, Trend } from './ty
 
 const random = (min: number, max: number) => Math.round(min + Math.random() * (max - min))
 
-const shuffle = <T>(items: T[]) => [...items].sort(() => Math.random() - 0.5)
-
-const sample = <T>(items: T[], count: number) => shuffle(items).slice(0, count)
-
 const sleep = (min: number, max: number) => new Promise((resolve) => setTimeout(resolve, random(min, max)))
 
 function age(minutes: number) {
@@ -17,21 +13,21 @@ function age(minutes: number) {
   return `${Math.floor(minutes / 1440)}d`
 }
 
-function engagement(reach: number) {
-  const views = Math.round(random(800, 60_000) * reach)
+function engagement(seed: number, reach: number) {
+  const views = (1_200 + ((seed * 7_919) % 48_000)) * reach
   return {
     views,
-    replies: Math.round(views * random(1, 5) * 0.001),
-    reposts: Math.round(views * random(1, 4) * 0.001),
-    likes: Math.round(views * random(10, 40) * 0.001),
+    replies: Math.round(views * 0.003),
+    reposts: Math.round(views * 0.002),
+    likes: Math.round(views * 0.025),
   }
 }
 
-function toPost(seed: PostSeed, id: string): Post {
+function toPost(seed: PostSeed, i: number, id: string): Post {
   return {
     id,
     author: people[seed.by],
-    age: seed.ad ? undefined : age(Math.max(1, seed.minutesAgo + random(-5, 5))),
+    age: seed.ad ? undefined : age(Math.max(1, seed.minutesAgo)),
     ad: seed.ad,
     text: seed.text,
     media: seed.media,
@@ -41,7 +37,7 @@ function toPost(seed: PostSeed, id: string): Post {
       text: seed.quote.text,
       media: seed.quote.media,
     },
-    counts: engagement(seed.ad ? 3 : 1),
+    counts: engagement(i + 1, seed.ad ? 3 : 1),
   }
 }
 
@@ -53,47 +49,46 @@ export async function getViewer(): Promise<Person> {
 export async function getBadgeCounts(): Promise<BadgeCounts> {
   await sleep(120, 260)
   return {
-    notifications: Math.random() < 0.7 ? random(1, 12) : 0,
-    messages: random(0, 3),
+    notifications: 10,
+    messages: 2,
   }
 }
 
 export async function getNews(): Promise<NewsStory[]> {
   await sleep(140, 320)
-  return sample(headlines, 3).map((headline) => ({
+  return headlines.slice(0, 3).map((headline, i) => ({
     ...headline,
-    age: `${random(1, 23)} hours ago`,
-    posts: random(200, 15_000),
-    faces: sample(Object.values(people), 3),
+    age: `${2 + i * 5} hours ago`,
+    posts: [12_400, 3_800, 920][i],
+    faces: Object.values(people).slice(i * 3, i * 3 + 3),
   }))
 }
 
 export async function getTrends(): Promise<Trend[]> {
   await sleep(280, 650)
-  return sample(trends, 4).map((trend) => ({
+  return trends.slice(0, 4).map((trend, i) => ({
     ...trend,
-    posts: Math.random() < 0.5 ? random(1_200, 90_000) : undefined,
+    posts: [48_200, undefined, 6_100, undefined][i],
   }))
 }
 
 export async function getWhoToFollow(): Promise<Person[]> {
   await sleep(350, 800)
-  return sample(suggestions, 3).map((key) => people[key])
+  return suggestions.slice(0, 3).map((key) => people[key])
 }
 
 export async function getForYou(): Promise<Timeline> {
   await sleep(420, 1100)
-  const [pinned, ad, ...rest] = forYou
   return {
-    newPosts: random(12, 90),
-    posts: [pinned, ad, ...shuffle(rest)].map((seed, i) => toPost(seed, `for-you-${i}`)),
+    newPosts: 42,
+    posts: forYou.map((seed, i) => toPost(seed, i, `for-you-${i}`)),
   }
 }
 
 export async function getFollowing(): Promise<Timeline> {
   await sleep(600, 1500)
   return {
-    newPosts: random(3, 30),
-    posts: following.map((seed, i) => toPost(seed, `following-${i}`)),
+    newPosts: 7,
+    posts: following.map((seed, i) => toPost(seed, i, `following-${i}`)),
   }
 }

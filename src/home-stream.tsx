@@ -1,7 +1,6 @@
 import { ServerSentEventGenerator } from '@starfederation/datastar-sdk/web'
 import type { JSX } from 'hono/jsx/jsx-runtime'
 import { Account, NavBadges } from './components/account'
-import { Timeline } from './components/post'
 import { TodaysNews, WhatsHappening, WhoToFollow } from './components/sidebar'
 import * as queries from './queries'
 import { renderToString } from './render'
@@ -19,8 +18,6 @@ export function streamHome() {
       queries.getNews().then((stories) => send(<TodaysNews stories={stories} />)),
       queries.getTrends().then((trends) => send(<WhatsHappening trends={trends} />)),
       queries.getWhoToFollow().then((people) => send(<WhoToFollow people={people} />)),
-      queries.getForYou().then((timeline) => send(<Timeline id="for-you" timeline={timeline} />)),
-      queries.getFollowing().then((timeline) => send(<Timeline id="following" timeline={timeline} />)),
     ])
   })
 }
