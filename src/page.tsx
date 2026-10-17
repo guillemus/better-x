@@ -60,8 +60,8 @@ function Tab({ id, label, chevron, onOpen = '' }: { id: string; label: string; c
       class="group flex flex-1 justify-center text-muted transition-colors hover:bg-ink/10 aria-selected:font-bold aria-selected:text-ink"
       role="tab"
       aria-selected={id === 'for-you' ? 'true' : 'false'}
-      data-attr:aria-selected={`$tab == \`${id}\` ? \`true\` : \`false\``}
-      data-on:click={`$tab = \`${id}\`; window.scrollTo(0, 0); ${onOpen}`}
+      data-attr:aria-selected={`$tab == '${id}' ? 'true' : 'false'`}
+      data-on:click={`$tab = '${id}'; window.scrollTo(0, 0); ${onOpen}`}
     >
       <span class="relative flex h-full items-center gap-1">
         {label}
@@ -104,8 +104,8 @@ function Home() {
           id="following"
           label="Following"
           onOpen={`
-            if (!$followingRequested) {
-              $followingRequested = true;
+            if (!$following_requested) {
+              $following_requested = true;
               @get('/home/timeline/following')
             }`}
         />
@@ -161,7 +161,7 @@ function FloatingButton({ icon, label }: { icon: IconName; label: string }) {
 
 export function HomePage() {
   return (
-    <div data-signals="{tab: `for-you`, newsDismissed: false}" data-init="@get(`/home/stream`)">
+    <div data-signals="{tab: `for-you`, news_dismissed: false}" data-init="@get(`/home/stream`)">
       <div class="flex min-h-screen justify-center">
         <Sidebar />
         <main class="flex flex-auto">

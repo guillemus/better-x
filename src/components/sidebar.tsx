@@ -19,11 +19,11 @@ export function Card({ id, title, dismissible, children }: CardProps) {
     <section
       id={id}
       class="mb-4 animate-fade-in overflow-hidden rounded-2xl border border-line"
-      data-show={dismissible ? '!$newsDismissed' : undefined}
+      data-show={dismissible ? '!$news_dismissed' : undefined}
     >
       <header class="flex items-center justify-between px-4 py-3">
         <h2 class="text-xl/6 font-extrabold">{title}</h2>
-        {dismissible && <IconButton icon="close" label="Dismiss" class="-my-1.5 -mr-2" onClick="$newsDismissed = true" />}
+        {dismissible && <IconButton icon="close" label="Dismiss" class="-my-1.5 -mr-2" onClick="$news_dismissed = true" />}
       </header>
       {children}
     </section>
